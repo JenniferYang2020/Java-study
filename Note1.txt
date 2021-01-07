@@ -1,0 +1,58 @@
+软件：一系列按照特病顺序组织的计算机数据和指令的集合
+人机交互方式： 图形化界面（GUI） 命令行方式（CLI）
+JVM： java与不同操作系统的桥梁
+java特性： 跨平台性
+JRE(java runtime enviroment java开发运行环境 ) = JVM +java程序所需的核心内库
+JDK(Java Development Kit java开发工具包)=JRE + java开发工具
+
+DOS的一些命令行方式：
+dir: directory (目录行)
+md: 创建目录
+cd: change directory
+rd: remove directory
+del: delete
+exit
+Java语言环境变量：
+即java应用程序使用原理(就是当用java命令运行java文件时的使用原理)：
+当用回车键执行时，首先会在当前目录寻找是否有能执行的应用程序，
+如果没有，系统会在path环境变量中寻找
+
+path：存放应用程序的环境变量，即系统中已有的应用程序
+
+怎么设置环境变量？
+1. haha=E:\java...\jdk...  //首先设置一个变量路径
+2. path=%haha%\bin; //设置环境变量
+
+
+怎么设置临时环境变量？
+set: 用于显示、设置、删除环境变量
+1. set path  //查看当前path中的环境变量
+2. set path=  //清空环境变量
+3. set path=haha //设置为当前环境变量只有haha
+4. set path=加入的环境变量；%path%  //加入新的环境变量
+
+Java运行流程
+1. javac： 编译， 调用JDK中的编译器，对java源文件进行语法检查，此时不会启动虚拟机。
+2. java： 启动虚拟机，到指定位置找到指定名的class文件，加载进内存，寻找主函数
+tips: main函数是java程序的入口。
+
+
+Java classpath的应用：
+set classpath=c:\myClass  //将Java运行文件的路径告诉系统，规定JVM只在指定路径执行查找类文件，并且只在此路径下寻找
+
+set classpath=c:\myClass;  //JVM会到指定路径寻找类文件，如果没有找到，会再次在当前目录下寻找
+
+classpath: 作用是告诉JVM到哪里寻找类文件
+tips: 在DOS中设置classpath, 是临时设置； 在环境变量中创建一个classpath则是全局通用。
+
+
+Java的基础组成：关键字  +  标识符  + 注释 +  变量和常量 +  运算符  +  语句  +  函数  +  数组
+
+关于注释：
+/* 这个是多行通用注释，多行注释中不能包含多行注释并且不会被编译进class文件，用于说明和调试程序    */
+
+/**  这个是文档注释，和多行注释最大的不同是可以通过java中的 javadoc 工具进行提取，帮忙生成说明书 */
+
+
+
+
