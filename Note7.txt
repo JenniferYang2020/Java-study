@@ -1,0 +1,226 @@
+Inner class 
+    内部类 概述
+        将一个类定义在另一个类里面，对里面那个类称为内部类。内部类有所属标识$
+
+        class Outer{
+            int num=3;
+            
+            class Inner{
+                void show(){
+                    SOP("Show run");
+                }
+            }
+            public void method{
+                Inner in=new Inner();
+            }
+        }
+
+        class InnerClassDemo{
+            public static void main(String[] args){
+                Outer o=new Outer();
+            }
+
+        }
+        //当上面的代码运行时，会有当个文件，分别：Outer.class   InnerClassDemo.class  Outer$Inner.class
+
+        为什么有内部类：为了方便用外部类的数据 
+
+        内部类访问特点：
+            1.内部类可以直接访问外部类中的成员
+            2.外部类要访问内部类，必须建立内部类的对象
+        
+        内部类一般用于类的设计：
+            分析事物时，发现该事物描述中还有事物，而且这个事物还在访问被描述事物的内容。这时就把这个事物定义成内部类来描述。
+
+    内部类 修饰符
+        内部类的成员，可以被修饰符修饰
+
+        Outer.Inner in=new Outer().new Inner(); 
+        //这里其实是先建立了外部类的对象，再建立内部类的对象
+        //Outer o=new Outer();
+        //Outer.Inner in=o.new Inner();
+        in.show(); //直接访问外部类中的内部类中的成员。
+
+        如果内部类是静态的，相当于一个外部类。
+        Outer.Inner in=new Outer.Inner();  //注意这里不用创建内部类对象，因为内部类成员是静态的。用到的是外部类的引用，没有括号
+        in.function(); //访问内部类中的静态成员。
+
+
+        Outer.Inner.function(); //如果内部类是静态的，成员是静态的，直接通过类名访问。注意通过类名访问时不需要括号的！！
+
+        tips：类中还可以定义内部接口，且可以定义另外一个内部类实现这个接口。内部接口自动具备静态属性，也就是说普通类是可是实现内部接口的。
+
+    内部类 细节
+        为什么内部类可以直接访问外部类的成员呢？
+            那是因为内部类持有外部类的引用（外部类名.this）
+            class Outer{
+                int num=3;
+                class Inner{
+                    int num=5;
+                    System.out.println(Outer.this.num); //这里是outer的变量 3
+                    System.out.println(Inner.this.num); //这里是inner的变量 5
+                    System.out.println(num);  //这里是inner的变量 5
+                }
+            }
+
+    内部类 局部内部类
+        内部类可以存放在局部位置上
+        内部类在局部位置上只能访问局部中被final修饰的局部变量
+
+        class Outer{
+            int num=3;
+            void method(){
+                final int x=3;
+                class Inner{
+                    void show(){
+                        SOP("Show"+x); //这里不能使用num，只能访问局部中被final修饰的变量即x.
+                    }
+                }
+            }
+        }
+
+    匿名内部类（其实就是一个匿名子类对象）
+        内部类的简写格式
+        必须有前提： 内部类必须继承或实现一个外部类或接口
+
+        interface HelloWorld {
+        public void greet();
+        public void greetSomeone(String someone);
+    } //这里是一个接口
+
+    HelloWorld frenchGreeting = new HelloWorld() {
+            String name = "tout le monde";
+            public void greet() {
+                greetSomeone("tout le monde");
+            }
+            public void greetSomeone(String someone) {
+                name = someone;
+                System.out.println("Salut " + name);
+            }
+        };  //这里匿名内部类实现了HelloWorld接口
+
+        所以在写顶类中写内部类时，格式是：
+            接口或父类名 内部类引用=new 接口或父类名（）{匿名子类的具体内容}
+
+    匿名内部类 应用
+        Inner in=new Inner(){
+            show(){}
+        }
+        匿名内部类的应用，用父类引用创建对象。
+
+        通常的使用场景之一
+            当函数参数是接口类型时，而且接口中的方法不超过三个（不包含三个）
+            可以匿名内部类作为实际参数进行传递
+
+        
+    面向对象 对象的初始化
+        子类调用，子类覆盖方法的使用。构造代码块运行的顺序
+
+        class Fu{
+    Fu(){
+        System.out.print("Fu cunstructor run");
+        show();
+    }
+
+    void show(){
+        System.out.println("hahha");
+    }
+}
+
+class Zi extends Fu{
+    int num=3;
+    Zi(){
+        System.out.print("Zi constructor run "+num);
+        
+    }
+    void show(){
+        System.out.println("num show "+num);
+    }
+}
+    0. 默认初始化
+    1. 子类的函数先运行---即和类同名的函数
+    2. 运行super()即父类的构造函数，注意此时还只是默认初始化，如果父类调用了函数，如果是子类的覆盖函数，则用子类的函数，如果没有覆盖，用父类的函数。
+    3. 显示初始化
+    4. 构造代码块运行
+    5. 构造函数运行剩下部分部分
+
+
+    Object类 equals方法
+
+    Object所有类的根类
+        Object是不断抽取而来，具备所有对象都具备的共性内容
+        
+        equals(Object obj) //判断两个对象是否相等，return true or false
+
+        Person p1=new Person(20);
+        Person p2=new Person(20);
+        System.out.println(p1==p2); //false 比较两个对象的地址
+        System.out.println(p1.equals(p2)); //false, 比较的也是地址，当且仅当两个引用指向一个对象时，return true.
+        Q:为什么还要有equals方法呢？
+            因为可以覆盖这个方法
+        
+    equals方法覆盖
+        class Person{
+            Person(int age){
+                this.age=age;
+            }
+
+            public boolean equals(Object obj){
+                if(!obj instanceof Person){
+                    throw new classCastException("类型错误")；
+                }else{
+                    Person p=(Person)obj;
+                    return this.age=p.age;
+                }
+            }
+        }
+
+        一般都会覆盖 equals方法，根据对象的特有内容，建立判断对象是否相同的依据。
+    
+    Object类 hashCode方法
+        hashCode() return该队形的哈希码值，返回的是十进制。
+        Integer.toHexString(#);
+        有时，hashCode()方法会进行重写
+        public int hashCode(){
+            return age;
+        }
+
+        两个对象是否相同，首先判断hashCode()一致,即地址一致，
+        其次，equals()判断，内容是否一致。
+
+        equals被重写时，通常有必要重写hashCode()方法，以维护hashCode()方法的常规协定，该协定声明相等对象必须相等地址
+
+    Object类 getClass方法
+        getClass:返回此object运行时类。即返回这个类对象。
+        
+        类文件共性：字节码文件
+
+        class Class{
+            name:(字节码名称)
+            field：
+            constructor：
+            method：
+        }
+        //字节码一进内存，就成为class对象。
+        在堆内存中会有字节码文件对象。
+        一般一个字节码文件（即class文件）只生成一个对象，所有对象根据这个对象生成。
+
+        Class c1=p1.getClass();
+        Class c2=p2.getClass();
+        c1==c2; //这里的结果是true.
+        因为c1 和 c2都是person的字节码文件
+
+    toString()方法
+        建议所有子类重写该方法
+        toString（）返回该对象的字符串表示。
+        toClass().getName()+'@'+Integer.toHexString(hashCode());
+
+        一般都会覆盖的方法：
+            equals()
+            hashCode()
+            toString()
+
+            
+
+        
+
