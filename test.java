@@ -11,14 +11,13 @@ class test{
 
         // System.out.println(Integer.MAX_VALUE);
         // System.out.println(Integer.MAX_VALUE+10);
-        String s="abc";
+        // String s="abc";
 
-        System.out.println(s.substring(0,3));
+        // System.out.println(s.substring(0,3));
+       
+        System.out.println(0.1+0.9);
 
-        } 
- public static void main(String[] args) {
-     
- }
+        }
 
 }
 

@@ -1,0 +1,236 @@
+异常
+
+面向对象 异常 概述
+    其实异常就是java通过面向对象的思想将问题封装成对象，用异常类对其进行描述。
+    异常： 是在运行时期发生的不正常情况。
+
+    在java中用类的形式对不正常的情况进行了描述和封装，描述不正常的情况的类，就称为异常类
+
+    if(){
+        ...
+    }
+    if(){
+        ...
+    }
+    //健壮判断代码，与正常代码结合太紧密，阅读性差,java用面向对象思想对错误进行封装
+
+    if(time<0){
+        new Futime();
+    }
+    //就代码为负的情况，这个对象中包含的问题名称、信息、位置等信息。
+
+    以前正常流程代码和问题处理代码相结合；
+    现在将正常流程与问题处理代码分离，提高阅读性。
+
+
+    异常 体系
+    问题很多，意味着描述的类也很多，将其共性向上抽取，形成了异常体系。
+
+    最终问题(不正常情况)就分成两类：
+    1.一般不能处理的：ERRO
+    2.可以处理的：Exception  
+        他们共同的父类是：Throwable.  无论是Error还是exception都是问题，问题发生就应该可以抛出，让调用者知道或处理。
+
+    return :不行，因为功能返回不能是问题。
+    throw(抛出)：该体系特点，就在于throwable及其所有子类都具有可抛性。
+
+    可抛性到底指的是什么？怎么体现可抛性？
+    --->throw  throws
+        凡是可以被这两个关键字所操作的类和对象都具有可抛性。
+
+    1.Error: 特点：是由JVM抛出的严重性问题，这种问题发生一般不针对性处理，直接修改程序。
+    2.异常 Exception: API，该体系的特点，子类的后缀名都是用父类名作为后缀，阅读性强。
+
+    异常 原理 &异常对象的抛出 throw
+
+        class Demo{
+            public void method(int[] arr,index){
+                SOP(arr[index]);
+            }
+        }
+
+        class ExceptionDemo{
+            public static void main(String[] args){
+                int[] arr=new int[3];
+                Demo d=new Demo();
+                d.method(arr,3);
+                //当这里调用Demo类中的method时，报错顺序：
+                    1.封装对象，new ArrayIndexOutofBoundsException ,当有错时，JVM new 了一个对象。
+                    2.抛出对象，抛出调用这个函数出错的地方，一旦抛出异常，程序直接结束。
+                    3.主函数会把异常再抛给虚拟机。虚拟机把详细信息打印出来。
+
+                tips:真实开发时，这些exception会存起来，形成log（日志），定期检查，提高程序性能。
+                    异常可以结束函数。
+            }
+        }
+
+
+    异常信息可自定义
+
+        if(index>=arr.length){
+            throw new ArrayIndexOutofBoundsException("数组角标越界了")
+        }
+        NullPointerException("数组引用不能为空")
+
+        按照java异常的创建思想，面向对象，将读书角标进行自定义描述，并封装对象。这种自定义的问题描述为自定义异常。
+        tips:如果让一个类称为异常类，必须继承异常体系（extends Exception）,因为只有称为异常体系的子类才有资格具备可抛性。才可以被关键字 throw throws所操作。
+            同时，要把异常暴露给对象，即再可能抛出异常的方程里，在声明处要抛出异常
+
+        class FuShuIndexException extends Exception{  //这是个自定义异常类，继承了异常体系，可以被throw 和throws所操作。
+            ....
+        }
+
+        public int method(int[] arr, int index) throws FuShuIndexException{  //在声明处要抛出这个异常，才能使用
+
+        }
+
+        public static void main(String[] args) throws FuShuIndexException{ //调用有异常类的函数时，也需要捕捉或声明。
+
+        }
+
+
+    面向对象 异常 编译时检测异常和运行异常的区别：throw 和 throws的区别
+    Exception分两种：
+    1.受检测异常，被检测异常：发生在编译时
+    2.运行时异常，runtimeExeception
+
+    1.编译时被检测异常：只要是Exception和其子类都是，除了特殊子类runtimeException.这种问题一旦出现，希望在编译时就进行检测，让这种问题有对应的处理方式。这样的问题都可以针对性的处理。
+    2.运行时异常（编译时不检测异常）：就是Exception中的runtimeException和其子类。这种问题发生时，无法让功能继续，运算无法进行，更多是因为调用者的原因导致的或者引发了内部状态的改变导致的。
+      那么一般这种问题一般不处理，直接编译通过，在运行时让调用者的调用程序强制停止，让调用者对代码进行修改。
+
+    所以自定义异常时，要么继承Exception，要么继承RuntimeException.
+
+    throw 和 throws的区别：
+        throws:使用在函数上，抛出异常，可以抛出多个，用逗号隔开，就是函数声明上。
+        throw:使用在函数内，抛出异常对象。throw new ...
+
+
+    异常捕捉 Try catch
+    异常处理的捕捉形式：
+        这是可以对异常进行针对性处理的方式
+        具体格式：
+        try{
+            //需要被检测异常的代码
+        }
+        catch(异常类 变量){  //接收发生的异常对象
+        //处理异常的代码
+        }
+        finally{
+            //一定会被执行的代码
+        }
+
+        tips:try和catch 还有finally 必须组合使用，但是可以单独组合
+              什么时候用try，什么时候用throw?
+              建立功能时，能处理的Exception，用try.不能处理的Exception用throw
+              别人传值时，错误改变不了，throw，即把错误丢给传值的人
+              自己用时，可以自己改变错误，可处理，用try.
+
+              try{ //需要检测的内容放try. 把检测到的异常对象给catch的异常变量
+                  int num=d.method(arr,30);
+                  System.out.println("num="+num);
+              }
+              catch(FuShuIndexException e){
+                  e.getMessage();
+                  sop("Over");
+
+                  //解决以后，程序继续运行。
+              }
+
+              class Demo{
+                  publlic static void method(int[] arr, int index) throws Exception{
+                      ...
+                  }
+              }
+
+                class Exception{
+                    Demo d=new Demo();
+                    try{
+                        d.method(); //当调用有throws Exception的方法时，用try对其进行判断
+                    }
+                    catch(Exception e){ //catch被抛出的异常
+                    FuShuIndexException E=new FuShuIndexException("角标变成负数啦")；
+                    e.getMessage();
+                    e.toString();
+                    e.printStackTrace(); //String:FuShuIndexException:把对象变成字符串。Exception有独特的对象字符串形式，不是哈希值。
+                    }
+                }
+                JVM默认的异常处理机制就是调用异对象的printStackTrace()的方法
+
+
+   多catch情况
+   try{
+
+   } 
+   catch(NullPointerException e){
+
+   }
+   catch(FuShuIndexException e){
+
+   }
+   catch(Exception e){
+
+   }
+   //多个catch,有父类放在最后。 多catch，父类catch放最下面，否则编译失败。
+
+   异常处理原则：
+    1.函数内部如果抛出需要检测的异常，那么函数必须用throws声明,否则必须在函数内用try catch捕捉，否则编译失败。
+    2.如果调用到了声明异常的函数，要么try catch要么throws,否则编译失败。
+    3.什么时候try，什么时候throws呢？
+        功能内容可以解决-->catch
+        解决不了，用throws告诉调用者，由调用者解决
+    4.一个功能如果抛出多个异常，那么调用时，必须有对应多个catch进行针对性处理。
+        内部有几个需要检测的异常，就抛出几个异常，抛出几个，就catch几个。
+
+    finally代码块
+        finally是一定会执行的代码块，哪怕return，结束函数在此之前也会执行，除了System.exit(0); 这是结束JVM的函数。
+
+        try{
+
+        }catch(Exception e){
+
+        }finally{
+
+        } 
+        什么作用？
+        连接数据库时，
+        查询过程有Exception,不会自动关闭数据库。
+        关闭连接时，用finally,一定会执行。
+        finally通常用于关闭(释放)资源。
+
+        try catch finally
+        1. try catch finally
+        2. try catch(多个) 当没有必要资源需要释放时，可以不用定义finally.
+        3.try finally 把异常throws给其他功能处理，异常无法直接catch处理，但资源需要关闭。
+
+        面向对象异常 异常应用
+        抛异常时，应抛类/对象相关异常
+        异常转换：就是当捕捉到一个异常，抛出的是另一个异常
+
+        比如，有个功能添加数据到数据库
+        class NoAddException extends Exception{
+            
+        }
+        void addData(Data d)throws NoAddException{
+            连接数据
+            try{
+                添加数据；
+                出现异常SQLException(); //内部处理完这个异常以后，要告诉调用者，没有添加成功。
+
+            }
+            catch(SQLException e){
+                throw new NoAddException(); //这里是堆内部的异常处理完以后，再抛出另一个异常，告诉调用者天界不成功。
+            }
+            finally{
+                关闭连接数据库。
+            }
+        }
+
+        异常的封装/转换
+        即接收到异常，不一定要抛出一样的异常，根据需要转换成其他异常抛出
+
+        异常的注意事项：
+            1.子类在覆盖父类方法时，父类的方法如果抛出异常，那么子类的方法只能抛出父类的异常或该异常的子类，也可以不抛
+            2.如果父类抛出多个异常，那么子类只能抛出父类异常的子集。
+              简单说：子类覆盖父类只能抛出父类的异常或者子类或者子集。
+              tips: 如果父类的方法没有抛出异常，那么子类覆盖时绝对不能抛异常，只能try.
+              
